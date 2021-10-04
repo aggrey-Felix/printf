@@ -17,7 +17,8 @@ typedef struct print
 
 int _putchar(char c);
 int _printf(const char *format, ...);
-int print_-(va_list -);
+int check_spec(const char *format, print_t *print_arr, va_list list);
+int print_c(va_list c);
 int print_s(va_list s);
 int print_l(va_list l);
 int print_h(va_list h);
