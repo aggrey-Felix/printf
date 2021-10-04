@@ -1,38 +1,77 @@
 #include "main.h"
+/**
+ * print_s - prints a string
+ * @s: string to print
+ *
+ * Return: number of chars printed
+ */
+int print_s(va_list s)
+{
+	int count;
+	char *str = va_arg(s, char *);
+
+	if (str == NULL)
+		str = "(null)";
+	for (count = 0; str[count]; count++)
+	{
+		_putchar(str[count]);
+	}
+	return (count);
+	}
+
 
 /**
- * print_bigS - Non printable characters
- * (0 < ASCII value < 32 or >= 127) are
- * printed this way: \x, followed by the ASCII code
- * value in hexadecimal (upper case - always 2 characters)
- * @l: va_list arguments from _printf
- * @f: pointer to the struct flags that determines
- * if a flag is passed to _printf
- * Return: number of char printed
+ * print_S - prints a string and nonprintable character ascii values
+ * @S: string to print
+ *
+ * Return: number of chars printed
  */
-int print_bigS(va_list l, flags_t *f)
+int print_S(va_list S)
 {
-	int i, count = 0;
-	char *res;
-	char *s = va_arg(l, char *);
+	unsigned int i;
+	int count = 0;
+	char *str = va_arg(S, char *);
 
-	(void)f;
-	if (!s)
-		return (_puts("(null)"));
-
-	for (i = 0; s[i]; i++)
+	if (str == NULL)
+		str = "(null)";
+	for (i = 0; str[i]; i++)
 	{
-		if (s[i] > 0 && (s[i] < 32 || s[i] >= 127))
+		if (str[i] < 32 || str[i] >= 127)
 		{
-			_puts("\\x");
+			_putchar('\\');
+			_putchar('x');
 			count += 2;
-			res = convert(s[i], 16, 0);
-			if (!res[1])
-				count += _putchar('0');
-			count += _puts(res);
+			count += hex_print(str[i]);
 		}
 		else
-			count += _putchar(s[i]);
+		{
+			_putchar(str[i]);
+			count++;
+		}
+	}
+	return (count);
+	}
+
+/**
+ * hex_print - prints a char's ascii value in uppercase hex
+ * @c: char to print
+ *
+ * Return: number of chars printed (always 2)
+ */
+static int hex_print(char c)
+{
+	int count;
+	char diff = 'A' - ':';
+	char d[2];
+
+	d[0] = c / 16;
+	d[1] = c % 16;
+	for (count = 0; count < 2; count++)
+	{
+		if (d[count] >= 10)
+			_putchar('0' + diff + d[count]);
+		else
+			_putchar('0' + d[count]);
 	}
 	return (count);
 }
