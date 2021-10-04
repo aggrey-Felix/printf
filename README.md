@@ -19,10 +19,12 @@ Decimal:
 
 Input: _printf("%d\n", 1000);
 Output: 1000
+
 Project Requirements
 All your files will be compiled on Ubuntu 20.04 LTS using gcc, using the options -Wall -Werror -Wextra -pedantic -std=gnu89
 Global variables are not allowed
 Authorized functions and macros:
+
 write (man 2 write)
 malloc (man 3 malloc)
 free (man 3 free)
