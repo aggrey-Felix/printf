@@ -18,7 +18,7 @@ int _printf(const char *format, ...);
 int print_-(va_list -);
 int print_s(va_list s);
 int print_l(va_list l);
-int print_bigS(va_list l, flags_t *f);
+static int hex_print(char c);
 int print_h(va_list h);
 int print_i(va_list i);
 int print_d(va_list d);
