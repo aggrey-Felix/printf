@@ -55,6 +55,10 @@ int _printf(const char *format, ...)
 	print_t spec[] = {
 		{"c", print_c},
 		{"s", print_s},
+		{"u", print_u},
+		{"o", print_o},
+		{"x", print_x},
+		{"X", print_X},
 		{NULL, NULL}
 	};
 
