@@ -19,12 +19,12 @@ Decimal:
 
 Input: _printf("%d\n", 1000);
 Output: 1000
+
 Project Requirements
-All files will be compiled on Ubuntu 14.04 LTS
-Programs and functions will be compiled with gcc 4.8.4 using flags -Wall -Werror -Wextra and -pedantic
-Code must follow the Betty style
+All your files will be compiled on Ubuntu 20.04 LTS using gcc, using the options -Wall -Werror -Wextra -pedantic -std=gnu89
 Global variables are not allowed
 Authorized functions and macros:
+
 write (man 2 write)
 malloc (man 3 malloc)
 free (man 3 free)
