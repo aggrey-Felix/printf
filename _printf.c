@@ -59,6 +59,10 @@ int _printf(const char *format, ...)
 		{"o", print_o},
 		{"x", print_x},
 		{"X", print_X},
+		{"d", print_d},
+		{"b", print_b},
+		{"i", print_i},
+		{"R", print_R},
 		{NULL, NULL}
 	};
 
