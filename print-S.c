@@ -1,24 +1,4 @@
 #include "main.h"
-/**
- * print_s - prints a string
- * @s: string to print
- *
- * Return: number of chars printed
- */
-int print_s(va_list s)
-{
-	int count;
-	char *str = va_arg(s, char *);
-
-	if (str == NULL)
-		str = "(null)";
-	for (count = 0; str[count]; count++)
-	{
-		_putchar(str[count]);
-	}
-	return (count);
-	}
-
 
 /**
  * print_S - prints a string and nonprintable character ascii values
@@ -58,7 +38,8 @@ int print_S(va_list S)
  *
  * Return: number of chars printed (always 2)
  */
-static int hex_print(char c)
+
+int hex_print(char c)
 {
 	int count;
 	char diff = 'A' - ':';
