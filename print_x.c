@@ -1,51 +1,77 @@
 #include "main.h"
 
 /**
- * convert_to_hex - converts a decimal number to hex
- * @n: number to be converted
- * @base: base of 16 being passed
- * @alpha: Char 'A' to 'F' or 'a' to 'f'
- * Return: number of chars printed
+ * print_x - Converts an unsigned int argument to hex using abcdef
+ *             and stores it to a buffer contained in a struct.
+ * @args: A va_list pointing to the argument to be converted.
+ * @flags: Flag modifiers.
+ * @wid: A width modifier.
+ * @prec: A precision modifier.
+ * @len: A length modifier.
+ * @output: A buffer_t struct containing a character array.
+ *
+ * Return: The number of bytes stored to the buffer.
  */
-int convert_to_hex(unsigned int n, unsigned int base, char alpha)
+unsigned int print_x(va_list args, buffer_t *output,
+		unsigned char flags, int wid, int prec, unsigned char len)
 {
-	unsigned int remainder = n % base;
-	unsigned int quotient = n / base;
-	char c;
+	unsigned long int num;
+	unsigned int ret = 0;
+	char *lead = "0x";
 
-	if (remainder > 10)
-		c = (remainder - 10) + alpha;
+	if (len == LONG)
+		num = va_arg(args, unsigned long int);
 	else
-		c = remainder + '0';
-	if (quotient == 0)
-	{
-		return (_putchar(c));
-	}
-	if (quotient < base)
-	{
-		if (quotient > 10)
-			return (_putchar(quotient - 10 + alpha) + _putchar(c));
-		return (_putchar(quotient + '0') + _putchar(c));
-	}
-	return (convert_to_hex(quotient, base, alpha) + _putchar(c));
+		num = va_arg(args, unsigned int);
+	if (len == SHORT)
+		num = (unsigned short)num;
+
+	if (HASH_FLAG == 1 && num != 0)
+		ret += _memcpy(output, lead, 2);
+
+	if (!(num == 0 && prec == 0))
+		ret += convert_ubase(output, num, "0123456789abcdef",
+				flags, wid, prec);
+
+	ret += print_neg_width(output, ret, flags, wid);
+
+	return (ret);
 }
 
 /**
- * print_x - Prints a hexadecimal number in lowercase notation
- * @x: Argument to be printed in lowercase hex notation
- * Return: Number of characters printed
+ * print_X - Converts an unsigned int argument to hex using ABCDEF
+ *             and stores it to a buffer contained in a struct.
+ * @args: A va_list pointing to the argument to be converted.
+ * @flags: Flag modifiers.
+ * @wid: A width modifier.
+ * @prec: A precision modifier.
+ * @len: A length modifier.
+ * @output: A buffer_t struct containing a character array.
+ *
+ * Return: The number of bytes stored to the buffer.
  */
-int print_x(va_list x)
+unsigned int print_X(va_list args, buffer_t *output,
+		unsigned char flags, int wid, int prec, unsigned char len)
 {
-	return (convert_to_hex(va_arg(x, unsigned int), 16, 'a'));
-}
+	unsigned long int num;
+	unsigned int ret = 0;
+	char *lead = "0X";
 
-/**
- * print_X - Prints a number in upercase hexadecimal notation
- * @X: Argument to be printed
- * Return: Number of characters printed
- */
-int print_X(va_list X)
-{
-	return (convert_to_hex(va_arg(X, unsigned int), 16, 'A'));
+	if (len == LONG)
+		num = va_arg(args, unsigned long);
+	else
+		num = va_arg(args, unsigned int);
+	if (len == SHORT)
+		num = (unsigned short)num;
+
+	if (HASH_FLAG == 1 && num != 0)
+		ret += _memcpy(output, lead, 2);
+
+	if (!(num == 0 && prec == 0))
+		ret += convert_ubase(output, num, "0123456789ABCDEF",
+				flags, wid, prec);
+
+	ret += print_neg_width(output, ret, flags, wid);
+
+	return (ret);
 }

@@ -1,75 +1,86 @@
 #include "main.h"
 
 /**
- * check_spec - function to check which specifier to print
- * @format: string being passed
- * @print_arr: array of struct ops
- * @list: list of arguments to print
- * Return: numb of char to be printed
+ * cleanup - Peforms cleanup operations for _printf.
+ * @args: A va_list of arguments provided to _printf.
+ * @output: A buffer_t struct.
  */
-int check_spec(const char *format, print_t *print_arr, va_list list)
+void cleanup(va_list args, buffer_t *output)
 {
-	char a;
-	int count = 0, b = 0, c = 0;
-
-	a = format[b];
-	while (a != '\0')
-	{
-		if (a == '%')
-		{
-			c = 0;
-			b++;
-			a = format[b];
-			while (print_arr[c].t != NULL &&
-			       a != *(print_arr[c].t))
-				c++;
-			if (print_arr[c].t != NULL)
-				count = count + print_arr[c].f(list);
-			else
-			{
-				if (a == '\0')
-					return (-1);
-				if (a != '%')
-					count += _putchar('%');
-				count += _putchar(a);
-			}
-		}
-		else
-			count += _putchar(a);
-		b++;
-		a = format[b];
-	}
-	return (count);
+	va_end(args);
+	write(1, output->start, output->len);
+	free_buffer(output);
 }
 
 /**
- * _printf - prints output according to format
- * @format: string being passed
- * Return: char to be printed
+ * run_printf - Reads through the format string for _printf.
+ * @format: Character string to print - may contain directives.
+ * @output: A buffer_t struct containing a buffer.
+ * @args: A va_list of arguments.
+ *
+ * Return: The number of characters stored to output.
+ */
+int run_printf(const char *format, va_list args, buffer_t *output)
+{
+	int i, wid, prec, ret = 0;
+	char tmp;
+	unsigned char flags, len;
+	unsigned int (*f)(va_list, buffer_t *,
+			unsigned char, int, int, unsigned char);
+
+	for (i = 0; *(format + i); i++)
+	{
+		len = 0;
+		if (*(format + i) == '%')
+		{
+			tmp = 0;
+			flags = handle_flags(format + i + 1, &tmp);
+			wid = handle_width(args, format + i + tmp + 1, &tmp);
+			prec = handle_precision(args, format + i + tmp + 1,
+					&tmp);
+			len = handle_length(format + i + tmp + 1, &tmp);
+
+			f = handle_specifiers(format + i + tmp + 1);
+			if (f != NULL)
+			{
+				i += tmp + 1;
+				ret += f(args, output, flags, wid, prec, len);
+				continue;
+			}
+			else if (*(format + i + tmp + 1) == '\0')
+			{
+				ret = -1;
+				break;
+			}
+		}
+		ret += _memcpy(output, (format + i), 1);
+		i += (len != 0) ? 1 : 0;
+	}
+	cleanup(args, output);
+	return (ret);
+}
+
+/**
+ * _printf - Outputs a formatted string.
+ * @format: Character string to print - may contain directives.
+ *
+ * Return: The number of characters printed.
  */
 int _printf(const char *format, ...)
 {
-	va_list list;
-	int a = 0;
-
-	print_t spec[] = {
-		{"c", print_c},
-		{"s", print_s},
-		{"u", print_u},
-		{"o", print_o},
-		{"x", print_x},
-		{"X", print_X},
-		{"d", print_d},
-		{"b", print_b},
-		{"i", print_i},
-		{"R", print_R},
-		{NULL, NULL}
-	};
+	buffer_t *output;
+	va_list args;
+	int ret;
 
 	if (format == NULL)
 		return (-1);
-	va_start(list, format);
-	a = check_spec(format, spec, list);
-	va_end(list);
-	return (a);
+	output = init_buffer();
+	if (output == NULL)
+		return (-1);
+
+	va_start(args, format);
+
+	ret = run_printf(format, args, output);
+
+	return (ret);
 }
