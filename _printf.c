@@ -26,7 +26,8 @@ int run_printf(const char *format, va_list args, buffer_t *output)
 	int i, wid, prec, ret = 0;
 	char tmp;
 	unsigned char flags, len;
-	unsigned int f;
+	unsigned int (*f)(va_list, buffer_t *,
+			unsigned char, int, int, unsigned char);
 
 	for (i = 0; *(format + i); i++)
 	{
@@ -44,8 +45,7 @@ int run_printf(const char *format, va_list args, buffer_t *output)
 			if (f != NULL)
 			{
 				i += tmp + 1;
-				ret += converter_t->func(args, output, flags,
-							 wid, prec, len);
+				ret += f(args, output, flags, wid, prec, len);
 				continue;
 			}
 			else if (*(format + i + tmp + 1) == '\0')
