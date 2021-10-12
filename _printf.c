@@ -44,7 +44,8 @@ int run_printf(const char *format, va_list args, buffer_t *output)
 			if (f != NULL)
 			{
 				i += tmp + 1;
-				ret += f(args, output, flags, wid, prec, len);
+				ret += converter_t->func(args, output, flags,
+							 wid, prec, len);
 				continue;
 			}
 			else if (*(format + i + tmp + 1) == '\0')
